@@ -1031,8 +1031,19 @@ namespace GenOnlineService
 			return m_bSubscribedToRealtimeSocialupdates;
 		}
 
-		public async Task RegisterExeCRC(string strExeCRC)
+		public async Task RegisterExeCRC(string? strExeCRC)
 		{
+			if (String.IsNullOrEmpty(strExeCRC))
+			{
+				return;
+			}
+
+			// without a baseline, every account would compare as a mismatch
+			if (String.IsNullOrEmpty(ACExeCRC))
+			{
+				return;
+			}
+
 			if (ACExeCRC.ToUpper() != strExeCRC.ToUpper())
 			{
 				// Flag the account for review

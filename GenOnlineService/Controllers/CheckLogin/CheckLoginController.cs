@@ -195,17 +195,17 @@ namespace GenOnlineService.Controllers
 										if (Enum.TryParse(clientID, ignoreCase: true, out KnownClients.EKnownClients knownClientID)
 											&& KnownClients.KnownClientSessionTypes.TryGetValue(knownClientID, out EUserSessionType sessionType))
 										{
-											// Game clients should register the user device
+											// Game clients should register the user device and the exe CRC
 											if (sessionType == EUserSessionType.GameClient)
 											{
 												string hwid_0 = data.ContainsKey("machine_guid") ? data["machine_guid"].ToString() : "NONE";
 												string hwid_1 = data.ContainsKey("mac_addr") ? data["mac_addr"].ToString() : "NONE";
 												string hwid_2 = data.ContainsKey("vol_serial") ? data["vol_serial"].ToString() : "NONE";
 												await Database.UserDevices.RegisterUserDevice(db, user_id, hwid_0, hwid_1, hwid_2, ipAddr);
-											}
 
-											string exe_crc = data.ContainsKey("exe_crc") ? data["exe_crc"].ToString() : "NONE";
-											Helpers.RegisterInitialPlayerExeCRC(user_id, exe_crc);
+												string exe_crc = data.ContainsKey("exe_crc") ? data["exe_crc"].ToString() : "NONE";
+												Helpers.RegisterInitialPlayerExeCRC(user_id, exe_crc);
+											}
 
 											var sessiontoken = Program.g_tokenGenerator.GenerateToken(strDisplayName, user_id, ipAddr, Program.JwtTokenGenerator.ETokenType.Session, knownClientID, sessionType, bIsAdmin);
 											var refreshtoken = Program.g_tokenGenerator.GenerateToken(strDisplayName, user_id, ipAddr, Program.JwtTokenGenerator.ETokenType.Refresh, knownClientID, sessionType, false, out string refreshJti);
